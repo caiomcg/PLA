@@ -1,15 +1,15 @@
 package sample;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import sample.Utils.FileManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class Controller {
     @FXML
@@ -31,13 +31,18 @@ public class Controller {
         System.out.println(text.getText());
 
         //for (String line : text.getText().split("\\n")) lines.add(line);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initOwner(menuBar.getScene().getWindow());
+        alert.setHeaderText("PLA - Pascal Lexic Analyser");
+        alert.setContentText("Analyzer is under development. Please refer to https://github.com/caiomcg/PLA");
+        alert.show();
     }
 
     @FXML
     private void onTextSave(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter( "Pascal files (*pas)", "*.pas"));
-        File file = fileChooser.showSaveDialog(null);
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter( "Pascal files (*.pas)", "*.pas"));
+        File file = fileChooser.showSaveDialog(menuBar.getScene().getWindow());
         if(file != null) {
             FileManager.saveFile(text.getText(), file);
         }
@@ -46,13 +51,37 @@ public class Controller {
     @FXML
     private void onTextOpen(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Pascal files (&pas)", "*.pas"));
-        File file = fileChooser.showOpenDialog(null);
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Pascal files (*.pas)", "*.pas"));
+        File file = fileChooser.showOpenDialog(menuBar.getScene().getWindow());
         if (file != null) {
             String content = FileManager.openFile(file);
             if (content != null) {
                 text.setText(content);
             }
+        }
+    }
+
+    @FXML
+    private void onAboutPress(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initOwner(menuBar.getScene().getWindow());
+        alert.setHeaderText("PLA - Pascal Lexic Analyser");
+        alert.setContentText("Developer: Caio Marcelo Campoy Guedes.\n\nFor more information visit: https://github.com/caiomcg/PLA");
+        alert.show();
+    }
+
+    @FXML
+    private void onQuit(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initOwner(menuBar.getScene().getWindow());
+        alert.setHeaderText("You are quitting the application");
+        alert.setContentText("Do you want to proceed?");
+
+
+        Optional<ButtonType> type = alert.showAndWait();
+
+        if (type.get() == ButtonType.OK) {
+            Platform.exit();
         }
     }
 }

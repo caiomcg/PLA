@@ -21,7 +21,6 @@ public final class FileManager {
         String lineRead = "";
         String fileContent = "";
 
-
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 

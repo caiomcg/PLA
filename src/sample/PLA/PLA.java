@@ -14,7 +14,7 @@ public class PLA {
 
     private int currentLineCounter;
     private ArrayList<Tuple<String, String, String>> tableOfSymbols;
-    private ArrayList<String> lines;
+    private String lines;
 
     public PLA(String content) {
         this.intDigits          = Pattern.compile("[0-9]+");
@@ -22,15 +22,20 @@ public class PLA {
 
         this.currentLineCounter = 0;
         this.tableOfSymbols     = new ArrayList<>();
-        this.lines              = new ArrayList<>();
-
-        for (String line : content.split("\\n")) lines.add(line);
+        this.lines              = content;
     }
 
     public ArrayList<Tuple<String, String, String>> analyze() {
-        for (String line : lines) {
-
+        discardComments(lines);
+        for (String line : lines.split("\\n")) {
+            System.out.println("Testing line - " + (currentLineCounter+1) + " - " + line);
+            currentLineCounter++;
         }
         return tableOfSymbols;
     }
+
+    private void discardComments(String line) {
+        lines = line.replaceAll("\\{(?s).*?}", "");
+    }
+
 }

@@ -5,10 +5,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import sample.PLA.PLA;
 import sample.Utils.FileManager;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Optional;
 
 public class Controller {
@@ -18,24 +18,15 @@ public class Controller {
     private TextArea text;
     @FXML
     private MenuBar menuBar;
-
-    private ArrayList<String> lines;
+    private PLA analyzer;
 
     public Controller() {
-        lines = new ArrayList<>();
     }
 
     @FXML
     private void onAnalyze(ActionEvent event) {
-        System.out.println("TAPPED");
-        System.out.println(text.getText());
-
-        //for (String line : text.getText().split("\\n")) lines.add(line);
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.initOwner(menuBar.getScene().getWindow());
-        alert.setHeaderText("PLA - Pascal Lexic Analyser");
-        alert.setContentText("Analyzer is under development. Please refer to https://github.com/caiomcg/PLA");
-        alert.show();
+        analyzer = new PLA(text.getText());
+        analyzer.analyze();
     }
 
     @FXML

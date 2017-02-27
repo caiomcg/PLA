@@ -14,6 +14,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("PLA - Pascal Lexic Analyser");
         primaryStage.setScene(new Scene(root, 790, 590));
+        primaryStage.getScene().getStylesheets().add("sample/res/layout.css");
         primaryStage.setResizable(false);
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("res/icon.png")));
         primaryStage.show();

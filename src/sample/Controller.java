@@ -1,14 +1,25 @@
 package sample;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import sample.PLA.PLA;
-import sample.Utils.FileManager;
+import sample.utils.FileManager;
+import sample.utils.TableData;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class Controller {
@@ -18,6 +29,7 @@ public class Controller {
     private TextArea text;
     @FXML
     private MenuBar menuBar;
+
     private PLA analyzer;
 
     public Controller() {
@@ -26,7 +38,41 @@ public class Controller {
     @FXML
     private void onAnalyze(ActionEvent event) {
         analyzer = new PLA(text.getText());
-        analyzer.analyze();
+        ArrayList<TableData> res = analyzer.analyze();
+        ObservableList<TableData> data = FXCollections.observableArrayList(res);
+
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("screens/table.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("PLA - Pascal Lexic Analyser - Analyzed File Table");
+            stage.setScene(new Scene(root, 790, 590));
+            stage.getScene().getStylesheets().add("sample/res/layout.css");
+            stage.setResizable(false);
+            stage.getIcons().add(new Image(getClass().getResourceAsStream("res/icon.png")));
+            TableView table = (TableView) stage.getScene().lookup("#table");
+
+            TableColumn tokenColumn = new TableColumn("Token");
+            tokenColumn.setMinWidth(10.0);
+            tokenColumn.setPrefWidth(300.0);
+            tokenColumn.setCellValueFactory(new PropertyValueFactory<TableData,String>("token"));
+
+            TableColumn classificationColumn = new TableColumn("Classification");
+            classificationColumn.setMinWidth(10.0);
+            classificationColumn.setPrefWidth(358.0);
+            classificationColumn.setCellValueFactory(new PropertyValueFactory<TableData,String>("classification"));
+
+            TableColumn lineColumn = new TableColumn("Line");
+            lineColumn.setMinWidth(10.0);
+            lineColumn.setPrefWidth(114.0);
+            lineColumn.setCellValueFactory(new PropertyValueFactory<TableData,String>("line"));
+
+            table.setItems(data);
+            table.getColumns().addAll(tokenColumn, classificationColumn, lineColumn);
+
+            stage.show();
+        } catch (IOException exception) {
+            System.err.println("FAIL");
+        }
     }
 
     @FXML

@@ -1,4 +1,4 @@
-package sample.Utils;
+package sample.utils;
 
 /**
  * Created by caiomcg on 24/02/2017.

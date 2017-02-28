@@ -11,7 +11,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("screens/editor.fxml"));
         primaryStage.setTitle("PLA - Pascal Lexic Analyser");
         primaryStage.setScene(new Scene(root, 790, 590));
         primaryStage.getScene().getStylesheets().add("sample/res/layout.css");

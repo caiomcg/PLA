@@ -1,4 +1,4 @@
-package sample.Utils;
+package sample.utils;
 
 import java.io.*;
 

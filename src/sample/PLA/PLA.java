@@ -4,7 +4,6 @@ import sample.utils.TableData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 /**
  * Created by caiomcg on 24/02/2017.
@@ -15,10 +14,9 @@ public class PLA {
 
     private ArrayList<TableData> tableOfSymbols;
 
-    private String attribution;
-
-    private Pattern intDigits;
-    private Pattern floatDigits;
+    private String intDigits;
+    private String floatDigits;
+    private String identifier;
 
     private ArrayList<String> keywords;
     private ArrayList<String> delimiter;
@@ -32,14 +30,13 @@ public class PLA {
 
         this.tableOfSymbols      = new ArrayList<>();
 
-        this.attribution         = ":=";
-
-        this.intDigits           = Pattern.compile("[0-9]+");
-        this.floatDigits         = Pattern.compile("[0-9]+[.][0-9]+");
+        this.intDigits           = "[0-9]+";
+        this.floatDigits         = "[0-9]+[.][0-9]+";
+        this.identifier          = "([0-9]+|[a-z]|[A-Z]|_)+";
 
         this.keywords            = new ArrayList<>(Arrays.asList("program", "var", "integer", "real", "boolean", "procedure", "begin",
                     "end", "if", "then", "else", "while", "do", "not"));
-        this.delimiter           = new ArrayList<>(Arrays.asList(";", ".", ":", "(", ")", ","));
+        this.delimiter           = new ArrayList<>(Arrays.asList(";", ".", ":", "(", ")", ",", ":="));
         this.comparisonOperators = new ArrayList<>(Arrays.asList("=", "<", ">", "<=", ">=", "<>"));
         this.additives            = new ArrayList<>(Arrays.asList("+", "-", "or"));
         this.multiplicatives     = new ArrayList<>(Arrays.asList("*", "/", "and"));
@@ -53,25 +50,48 @@ public class PLA {
         for (String line : lines.split("\\n")) {
             System.out.println("Testing line - " + currentLineCounter + " - " + line);
             for (String split : line.split("\\s+")) { //ASSUMING A SPACE IS USED TO DELIMIT TOKENS
-                if (this.keywords.contains(split)) {
-                    classification = "Keyword";
-                } else if (this.delimiter.contains(split)) {
-                    classification = "Delimiter";
-                } else if (this.comparisonOperators.contains((split))) {
-                    classification = "Comparison Operator";
-                } else if (this.additives.contains(split)) {
-                    classification = "Additive Operator";
-                } else if (this.multiplicatives.contains(split)) {
-                    classification = "Multiplicative Operator";
-                } else if (split.equals("")) {
+                classification = check(split);
 
+                if (classification.equals("unknown")) {
+                    try {
+                        classification = check(split.substring(0, split.length() - 1));
+                        if (!classification.equals("unknown")) {
+                            this.tableOfSymbols.add(new TableData(split.substring(0, split.length() - 1), classification, Integer.toString(currentLineCounter)));
+                            classification = check(split.substring(split.length() - 1));
+                            if (!classification.equals("unknown")) {
+                                this.tableOfSymbols.add(new TableData(split.substring(split.length() - 1), classification, Integer.toString(currentLineCounter)));
+                            }
+                        }
+                    }catch(StringIndexOutOfBoundsException exception){}
+                } else {
+                    this.tableOfSymbols.add(new TableData(split, classification, Integer.toString(currentLineCounter)));
                 }
-                this.tableOfSymbols.add(new TableData(split, "Keyword", Integer.toString(currentLineCounter)));
             }
             currentLineCounter++;
         }
-
         return tableOfSymbols;
+    }
+
+    private String check(String split) {
+
+        if (this.keywords.contains(split)) {
+            return "Keyword";
+        } else if (this.delimiter.contains(split)) {
+            return "Delimiter";
+        } else if (this.comparisonOperators.contains((split))) {
+            return "Comparison Operator";
+        } else if (this.additives.contains(split)) {
+            return "Additive Operator";
+        } else if (this.multiplicatives.contains(split)) {
+            return "Multiplicative Operator";
+        } else if (split.matches(this.intDigits)){
+            return "Integer Digit";
+        } else if (split.matches(this.floatDigits)) {
+            return "Floating Point Digit";
+        } else if (split.matches(this.identifier)) {
+            return "Identifier";
+        }
+        return "unknown";
     }
 
     private void discardComments(String line) {

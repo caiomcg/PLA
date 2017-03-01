@@ -71,7 +71,11 @@ public class Controller {
 
             stage.show();
         } catch (IOException exception) {
-            System.err.println("FAIL");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initOwner(menuBar.getScene().getWindow());
+            alert.setHeaderText("PLA - Pascal Lexic Analyser");
+            alert.setContentText("Could not create the lexic table.");
+            alert.show();
         }
     }
 

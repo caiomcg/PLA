@@ -44,6 +44,7 @@ public class PLA {
 
     public ArrayList<TableData> analyze() {
         String classification;
+        addAnalysisToken(lines);
         discardComments(lines);
         removeExtraSpaces(lines);
 
@@ -92,6 +93,40 @@ public class PLA {
             return "Identifier";
         }
         return "unknown";
+    }
+
+    private void addAnalysisToken(String line) {
+        StringBuilder stringBuilder = new StringBuilder(line);
+        int insertPoint = 0;
+
+        for (int i = 0; i < line.length(); i++, insertPoint++) {
+            String token = String.valueOf(line.charAt(i));
+            System.out.print(token);
+            if (token.equals(".")) {
+                continue;
+            }
+
+            try {
+                if (this.delimiter.contains(token) || this.comparisonOperators.contains(token) ||
+                        this.additives.contains(token) || this.multiplicatives.contains(token)) {
+                    if (token.equals(":") || token.equals("<") || token.equals(">")) {
+                        if (line.charAt(i+1) == '=' || line.charAt(i+1) == '>') {
+                            stringBuilder.insert(insertPoint+2, " ");
+                            stringBuilder.insert(insertPoint, " ");
+                            i += 1;
+                            insertPoint += 3;
+                        }
+                    } else {
+                        stringBuilder.insert(insertPoint + 1, " ");
+                        stringBuilder.insert(insertPoint, " ");
+                        insertPoint += 2;
+                    }
+                }
+            } catch (ArrayIndexOutOfBoundsException exc) {
+                System.err.println("out");
+            }
+        }
+        lines = stringBuilder.toString();
     }
 
     private void discardComments(String line) {

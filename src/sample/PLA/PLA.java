@@ -32,7 +32,7 @@ public class PLA {
 
         this.intDigits           = "[0-9]+";
         this.floatDigits         = "[0-9]+[.][0-9]+";
-        this.identifier          = "([0-9]+|[a-z]|[A-Z]|_)+";
+        this.identifier          = "([a-z]|[A-Z])([0-9]|[a-z]+|[A-Z]|_)*";
 
         this.keywords            = new ArrayList<>(Arrays.asList("program", "var", "integer", "real", "boolean", "procedure", "begin",
                     "end", "if", "then", "else", "while", "do", "not"));
@@ -54,14 +54,10 @@ public class PLA {
                 classification = check(split);
 
                 if (classification.equals("unknown")) {
-                    try {
+                    try { 
                         classification = check(split.substring(0, split.length() - 1));
                         if (!classification.equals("unknown")) {
-                            this.tableOfSymbols.add(new TableData(split.substring(0, split.length() - 1), classification, Integer.toString(currentLineCounter)));
-                            classification = check(split.substring(split.length() - 1));
-                            if (!classification.equals("unknown")) {
-                                this.tableOfSymbols.add(new TableData(split.substring(split.length() - 1), classification, Integer.toString(currentLineCounter)));
-                            }
+                            System.out.println("Split: " + split + " line " + this.currentLineCounter + " FAIL");
                         }
                     }catch(StringIndexOutOfBoundsException exception){}
                 } else {
@@ -115,6 +111,10 @@ public class PLA {
                             stringBuilder.insert(insertPoint, " ");
                             i += 1;
                             insertPoint += 3;
+                        } else {
+                            stringBuilder.insert(insertPoint + 1, " ");
+                            stringBuilder.insert(insertPoint, " ");
+                            insertPoint += 2;
                         }
                     } else {
                         stringBuilder.insert(insertPoint + 1, " ");

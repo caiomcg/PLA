@@ -54,7 +54,7 @@ public class PLA {
                 classification = check(split);
 
                 if (classification.equals("unknown")) {
-                    try { 
+                    try {
                         classification = check(split.substring(0, split.length() - 1));
                         if (!classification.equals("unknown")) {
                             System.out.println("Split: " + split + " line " + this.currentLineCounter + " FAIL");
@@ -98,13 +98,22 @@ public class PLA {
         for (int i = 0; i < line.length(); i++, insertPoint++) {
             String token = String.valueOf(line.charAt(i));
             System.out.print(token);
-            if (token.equals(".")) {
-                continue;
-            }
 
             try {
                 if (this.delimiter.contains(token) || this.comparisonOperators.contains(token) ||
                         this.additives.contains(token) || this.multiplicatives.contains(token)) {
+                    if (token.equals(".")) {
+                        System.out.println("Char is: " + line.charAt((i-1)));
+                        try {
+                            if (line.charAt(i-1) == 'd') {
+                                stringBuilder.insert(insertPoint + 1, " ");
+                                stringBuilder.insert(insertPoint, " ");
+                                insertPoint += 2; //FIX
+                            }
+                        } catch (ArrayIndexOutOfBoundsException exception) {}
+                        continue;
+                    }
+
                     if (token.equals(":") || token.equals("<") || token.equals(">")) {
                         if (line.charAt(i+1) == '=' || line.charAt(i+1) == '>') {
                             stringBuilder.insert(insertPoint+2, " ");

@@ -7,22 +7,35 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TableView;
+import sample.PLA.PSA;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
  * Created by caiomcg on 27/02/2017.
  */
 public class TableController {
+    public static ArrayList<TableData> lexicData;
     @FXML
     public TableView table;
     @FXML
     private MenuBar menuBar;
 
+    private PSA analyzer;
 
     @FXML
     private void onTextSave(ActionEvent event) {
         System.out.println("doing");
+    }
+
+    @FXML
+    private void onSintaticPress(ActionEvent event) {
+        System.out.println("sintatic");
+        analyzer = new PSA(lexicData);
+        System.out.println("sintatic2");
+        analyzer.analyze();
+        System.out.println("sintatic3");
     }
 
     @FXML

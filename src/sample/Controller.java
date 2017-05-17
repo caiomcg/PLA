@@ -15,6 +15,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sample.PLA.PLA;
 import sample.utils.FileManager;
+import sample.utils.TableController;
 import sample.utils.TableData;
 
 import java.io.File;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class Controller {
+    private ArrayList<TableData> res;
     @FXML
     private Button analyze;
     @FXML
@@ -32,14 +34,12 @@ public class Controller {
 
     private PLA analyzer;
 
-    public Controller() {
-    }
-
     @FXML
     private void onAnalyze(ActionEvent event) {
         analyzer = new PLA(text.getText());
-        ArrayList<TableData> res = analyzer.analyze();
+        res = analyzer.analyze();
         ObservableList<TableData> data = FXCollections.observableArrayList(res);
+        TableController.lexicData = res;
 
         try {
             Parent root = FXMLLoader.load(getClass().getResource("screens/table.fxml"));

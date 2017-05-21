@@ -1,5 +1,7 @@
 package sample.utils;
 
+import jdk.nashorn.internal.parser.Token;
+
 /**
  * Created by caiomcg on 27/02/2017.
  */
@@ -36,5 +38,10 @@ public class TableData {
 
     public void setLine(String line) {
         this.line = line;
+    }
+
+    @Override
+    public String toString() {
+        return "" + token + " - " + classification + "["+ line + "]";
     }
 }

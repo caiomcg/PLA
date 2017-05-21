@@ -31,11 +31,8 @@ public class TableController {
 
     @FXML
     private void onSintaticPress(ActionEvent event) {
-        System.out.println("sintatic");
         analyzer = new PSA(lexicData);
-        System.out.println("sintatic2");
         analyzer.analyze();
-        System.out.println("sintatic3");
     }
 
     @FXML

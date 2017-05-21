@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * Created by caiomcg on 24/02/2017.
  */
-public class PLA {
+public class PLA implements Analyser {
     private int currentLineCounter;
     private String lines;
 
@@ -42,6 +42,7 @@ public class PLA {
         this.multiplicatives     = new ArrayList<>(Arrays.asList("*", "/", "and"));
     }
 
+    @Override
     public ArrayList<TableData> analyze() {
         String classification;
         addAnalysisToken(lines);

@@ -93,7 +93,7 @@ public class PSA implements Analyser {
     }
 
     private boolean validateVariableList() {
-        System.out.println("VVL - "+ res.get(index).toString());
+        System.out.println("VVL - " + res.get(index).toString());
         loops = 0;
 
         if (res.get(index).getClassification().equals("Keyword")) {
@@ -188,7 +188,9 @@ public class PSA implements Analyser {
     private boolean isOperator() {
         return res.get(index).getClassification().equals("Additive Operator") ||
                 res.get(index).getClassification().equals("Multiplicative Operator") ||
-                res.get(index).getClassification().equals("Comparison Operator");
+                res.get(index).getClassification().equals("Comparison Operator") ||
+                res.get(index).getToken().equals("and") ||
+                res.get(index).getToken().equals("or");
     }
 
     int parenthesis = 0;
@@ -214,9 +216,10 @@ public class PSA implements Analyser {
             }
 
             //checa se chegou ao fim da expressao
-            if ((res.get(index).getToken().equals("then") ||
-                    res.get(index).getToken().equals(";")) &&
-                    parenthesis == 0) {
+            if ((   res.get(index).getToken().equals("then") ||
+                    res.get(index).getToken().equals(";") ||
+                    res.get(index).getToken().equals("do") &&
+                    parenthesis == 0)) {
                 return true;
             }
 

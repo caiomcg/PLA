@@ -197,20 +197,20 @@ public class PSA implements Analyser {
         //possui parentesis?
         if (res.get(index).getToken().equals("(")) {
             parenthesis++;
-            index++;
+            moveStackReference();
             return validateExpression();
         }
 
         //Checa se tem var/num/booleana
         if (isValue()) {
-            index++;
+            moveStackReference();
 
             //fecha parentesis?
             while (res.get(index).getToken().equals(")")) {
                 if (parenthesis < 1)
                     return false;
                 parenthesis--;
-                index++;
+                moveStackReference();
             }
 
             //checa se chegou ao fim da expressao
@@ -221,7 +221,7 @@ public class PSA implements Analyser {
             }
 
             if (isOperator()) {
-                index++;
+                moveStackReference();
                 return validateExpression();
             }
         }

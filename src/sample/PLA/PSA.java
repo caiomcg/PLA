@@ -30,6 +30,8 @@ public class PSA implements Analyser {
         return res;
     }
 
+    boolean localProcedure = false;
+
     private boolean recursiveAnalysis() {
         System.out.println("PRE VAR--------------");
         if (res.get(index).getToken().equals("var")) {
@@ -42,6 +44,7 @@ public class PSA implements Analyser {
 
         System.out.println("PRE PROCEDURE---------------");
         if (res.get(index).getToken().equals("procedure")) {
+            localProcedure = true;
             moveStackReference();
             if (!validateProcedure()) {
                 System.out.println("NOPE");
@@ -58,8 +61,11 @@ public class PSA implements Analyser {
                 return false;
             } else if (res.get(index).getToken().equals(";")) {
                 moveStackReference();
+                localProcedure = false;
                 return recursiveAnalysis(); //It is the end of a procedure
             } else if (res.get(index).getToken().equals(".")) {
+                if (localProcedure)
+                    return false;
                 return true; //The end of the program
             }
         }
@@ -96,7 +102,7 @@ public class PSA implements Analyser {
     private boolean validateVariableList() {
         System.out.println("VVL - " + res.get(index).toString());
         loops = 0;
-        System.out.println("VVL - "+ res.get(index).toString());
+        System.out.println("VVL - " + res.get(index).toString());
 
         if (res.get(index).getClassification().equals("Keyword")) {
             return loops != 0;
@@ -218,10 +224,10 @@ public class PSA implements Analyser {
             }
 
             //checa se chegou ao fim da expressao
-            if ((   res.get(index).getToken().equals("then") ||
+            if ((res.get(index).getToken().equals("then") ||
                     res.get(index).getToken().equals(";") ||
                     res.get(index).getToken().equals("do") &&
-                    parenthesis == 0)) {
+                            parenthesis == 0)) {
                 return true;
             }
 

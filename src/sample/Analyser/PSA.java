@@ -11,10 +11,12 @@ public class PSA implements Analyser {
     private int index;
     private int loops;
     private ArrayList<TableData> res;
+    private PSEA semantic;
 
     public PSA(ArrayList<TableData> res) {
         this.index = 0;
         this.res = res;
+        this.semantic = new PSEA();
     }
 
     @Override
@@ -80,6 +82,7 @@ public class PSA implements Analyser {
     private boolean validateBody() {
         System.out.println("VALIDATING BODY " + res.get(index).toString());
         if (res.get(index).getToken().equals("end")) {
+            semantic.removeStack();
             System.out.println("Found END");
             moveStackReference();
             return true;
@@ -90,6 +93,10 @@ public class PSA implements Analyser {
             moveStackReference();
 
             if (res.get(index).getToken().equals(":=")) {
+                if (!semantic.isTypeValid(res.get(index-1))) {
+                    index--;
+                    return false;
+                }
                 System.out.println("Found equals");
                 moveStackReference();
                 if (!validateExpression()) {
@@ -156,6 +163,7 @@ public class PSA implements Analyser {
                 moveStackReference();
                 System.out.println("Found identifier");
                 if (res.get(index).getToken().equals(";")) {
+                    semantic.insertStack();
                     moveStackReference();
                     System.out.println("Found ;");
                     return true;
@@ -175,6 +183,7 @@ public class PSA implements Analyser {
 
         if (consumeVariables()) {
             if (res.get(index).getClassification().equals("Keyword")) {
+                semantic.tempToStack(res.get(index).getToken());
                 moveStackReference();
                 if (res.get(index).getToken().equals(";")) {
                     moveStackReference();
@@ -191,6 +200,7 @@ public class PSA implements Analyser {
     private boolean consumeVariables() {
         System.out.println("Validating for " + res.get(index).getToken());
         if (res.get(index).getClassification().equals("Identifier")) {
+            semantic.insertTempData(res.get(index).getToken());
             moveStackReference();
             if (res.get(index).getToken().equals(",")) {
                 moveStackReference();
@@ -237,6 +247,7 @@ public class PSA implements Analyser {
             moveStackReference();
             System.out.println("Found identifier");
             if (res.get(index).getToken().equals("(")) {
+                semantic.insertStack();
                 moveStackReference();
                 System.out.println("Found Parentheses");
                 while (true) {
@@ -249,6 +260,7 @@ public class PSA implements Analyser {
                         System.out.println("Consume: " + res.get(index).toString());
 
                         if(res.get(index).getToken().equals(";")) {
+
                             System.out.println("OK");
                             moveStackReference();
                             return true;
@@ -314,6 +326,9 @@ public class PSA implements Analyser {
 
         //Checa se tem var/num/booleana
         if (isValue()) {
+            if (!semantic.isTypeValid(res.get(index))) {
+                return false;
+            }
             System.out.println("Found identifier - EXP");
             moveStackReference();
 
@@ -326,12 +341,14 @@ public class PSA implements Analyser {
             }
 
             //checa se chegou ao fim da expressao
+
             System.out.println("END OF EXP " + res.get(index).toString());
             if ((res.get(index).getToken().equals("then") ||
                     res.get(index).getToken().equals(";") ||
                     res.get(index).getToken().equals("do") &&
                             parenthesis == 0)) {
                 moveStackReference();
+                semantic.cleanInitialValue();
                 System.out.println("END OF EXP2 " + res.get(index).toString());
                 return true;
             }

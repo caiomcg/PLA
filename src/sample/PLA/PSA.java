@@ -34,6 +34,7 @@ public class PSA implements Analyser {
         System.out.println("PRE VAR--------------");
         if (res.get(index).getToken().equals("var")) {
             moveStackReference();
+            loops = 0;
             if (!validateVariableList()) {
                 return false;
             }
@@ -95,6 +96,7 @@ public class PSA implements Analyser {
     private boolean validateVariableList() {
         System.out.println("VVL - " + res.get(index).toString());
         loops = 0;
+        System.out.println("VVL - "+ res.get(index).toString());
 
         if (res.get(index).getClassification().equals("Keyword")) {
             return loops != 0;
@@ -199,20 +201,20 @@ public class PSA implements Analyser {
         //possui parentesis?
         if (res.get(index).getToken().equals("(")) {
             parenthesis++;
-            index++;
+            moveStackReference();
             return validateExpression();
         }
 
         //Checa se tem var/num/booleana
         if (isValue()) {
-            index++;
+            moveStackReference();
 
             //fecha parentesis?
             while (res.get(index).getToken().equals(")")) {
                 if (parenthesis < 1)
                     return false;
                 parenthesis--;
-                index++;
+                moveStackReference();
             }
 
             //checa se chegou ao fim da expressao
@@ -224,7 +226,7 @@ public class PSA implements Analyser {
             }
 
             if (isOperator()) {
-                index++;
+                moveStackReference();
                 return validateExpression();
             }
         }

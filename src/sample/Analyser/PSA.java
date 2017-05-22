@@ -245,16 +245,7 @@ public class PSA implements Analyser {
                                 System.out.println("Continuing");
                                 continue;
                             }
-                            if (res.get(index).getToken().equals(")")) {
-                                moveStackReference();
-                                System.out.println("ON CLOSE");
-                                if (res.get(index).getToken().equals(";")) {
-                                    moveStackReference();
-                                    System.out.println("ON ;");
-                                    return true;
-                                }
-                                return false;
-                            }
+
                             System.out.println("SKIPPED");
                         }
                     } else {

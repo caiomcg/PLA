@@ -29,7 +29,9 @@ public class PSEA {
 
 //    public String getValueType(String value) {
 //        for(HashMap map:idsStacks) {
-////            map.get(value)
+//            if(!map.containsKey(value))
+//                continue;
+//            return map.get(value);
 //        }
 //    }
 

@@ -55,6 +55,7 @@ public class PSA implements Analyser {
 
         System.out.println("PRE BODY-----------------");
         if (res.get(index).getToken().equals("begin")) {
+            System.out.println("Found BEGIN AT BODY");
             moveStackReference();
             if (!validateBody()) {
                 System.out.println("DEU AGUIA");
@@ -74,14 +75,18 @@ public class PSA implements Analyser {
     }
 
     private boolean validateBody() {
+        System.out.println("VALIDATING BODY " + res.get(index).toString());
         if (res.get(index).getToken().equals("end")) {
+            System.out.println("Found END");
             moveStackReference();
             return true;
         }
 
         if (res.get(index).getClassification().equals("Identifier")) {
+            System.out.println("Found Identifier");
             moveStackReference();
             if (res.get(index).getToken().equals(":=")) {
+                System.out.println("Found equals");
                 moveStackReference();
                 if(!validateExpression()) {
                     return false;
@@ -90,10 +95,20 @@ public class PSA implements Analyser {
             }
         }
 
+        if (res.get(index).getToken().equals("else")) {
+            moveStackReference();
+            return validateBody();
+        }
+
         if (res.get(index).getToken().equals("if") || res.get(index).getToken().equals("while")) {
+            System.out.println("Found if or while");
+            moveStackReference();
             if (!validateExpression()) {
                 return false;
             }
+            System.out.println("After validating expression");
+            System.out.println("------" + res.get(index).toString());
+
             if (res.get(index).getToken().equals("begin")) {
                 moveStackReference();
                 if (!validateBody()) {
@@ -107,6 +122,7 @@ public class PSA implements Analyser {
                     }
                 }
             }
+            return validateBody();
         }
 
         return false; //RETURN FALSE!!
@@ -214,6 +230,8 @@ public class PSA implements Analyser {
 
 
     private boolean isValue() {
+        System.out.println("Inside is value");
+        System.out.println(res.get(index).toString());
         return res.get(index).getClassification().equals("Identifier") ||
                 res.get(index).getClassification().equals("Integer Digit") ||
                 res.get(index).getClassification().equals("Floating Point Digit") ||
@@ -241,6 +259,7 @@ public class PSA implements Analyser {
 
         //Checa se tem var/num/booleana
         if (isValue()) {
+            System.out.println("Found identifier - EXP");
             moveStackReference();
 
             //fecha parentesis?
@@ -252,10 +271,13 @@ public class PSA implements Analyser {
             }
 
             //checa se chegou ao fim da expressao
+            System.out.println("END OF EXP " + res.get(index).toString());
             if ((res.get(index).getToken().equals("then") ||
                     res.get(index).getToken().equals(";") ||
                     res.get(index).getToken().equals("do") &&
                             parenthesis == 0)) {
+                moveStackReference();
+                System.out.println("END OF EXP2 " + res.get(index).toString());
                 return true;
             }
 

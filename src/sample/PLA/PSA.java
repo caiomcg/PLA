@@ -19,11 +19,11 @@ public class PSA implements Analyser {
     @Override
     public ArrayList<TableData> analyze() throws RuntimeException {
         if (!validateProgram()) { // Validate program ? ;
-            throw new RuntimeException("Failed at line: " + res.get(index++).getLine());
+            throw new RuntimeException("Failed at line: " + res.get(index).getLine() + " - bad token: " + res.get(index).getToken());
         }
 
         if (!recursiveAnalysis()) {
-            throw new RuntimeException("Failed at line: " + res.get(index+1).toString());
+            throw new RuntimeException("Failed at line: " + res.get(index).getLine() + " - bad token: " + res.get(index).getToken());
         }
 
         return res;
@@ -32,7 +32,7 @@ public class PSA implements Analyser {
     private boolean recursiveAnalysis() {
         System.out.println("PRE VAR--------------");
         if (res.get(index).getToken().equals("var")) {
-            index++;
+            moveStackReference();
             if (!validateVariableList()) {
                 return false;
             }
@@ -40,7 +40,7 @@ public class PSA implements Analyser {
 
         System.out.println("PRE PROCEDURE---------------");
         if (res.get(index).getToken().equals("procedure")) {
-            index++;
+            moveStackReference();
             if (!validateProcedure()) {
                 System.out.println("NOPE");
                 return false;
@@ -50,19 +50,39 @@ public class PSA implements Analyser {
 
         System.out.println("PRE BODY-----------------");
         if (res.get(index).getToken().equals("begin")) {
-            index++;
-            return true;
+            moveStackReference();
+            if (!validateBody()) {
+                System.out.println("DEU AGUIA");
+                return false;
+            } else if (res.get(index).getToken().equals(";")) {
+                moveStackReference();
+                return recursiveAnalysis(); //It is the end of a procedure
+            } else if (res.get(index).getToken().equals(".")) {
+                return true; //The end of the program
+            }
         }
-
+        System.out.println("LEAVING");
         return false;
     }
 
+    private boolean validateBody() {
+        //VALIDATE THE ENTIRE BODY
+        if (res.get(index).getToken().equals("end")) { //FINISHES THE BODY! - THE VALIDATOR FOR THIS PROCEDURE
+            moveStackReference();
+            return true;
+        }
+        return true; //RETURN FALSE!!
+    }
+
     private boolean validateProgram() {
-        if (res.get(index++).getToken().equals("program")) {
+        if (res.get(index).getToken().equals("program")) {
+            moveStackReference();
             System.out.println("Found program");
-            if (res.get(index++).getClassification().equals("Identifier")) {
+            if (res.get(index).getClassification().equals("Identifier")) {
+                moveStackReference();
                 System.out.println("Found identifier");
-                if (res.get(index++).getToken().equals(";")) {
+                if (res.get(index).getToken().equals(";")) {
+                    moveStackReference();
                     System.out.println("Found ;");
                     return true;
                 }
@@ -77,8 +97,10 @@ public class PSA implements Analyser {
             return true;
 
         if (consumeVariables()) {
-            if (res.get(index++).getClassification().equals("Keyword")) {
-                if (res.get(index++).getToken().equals(";")) {
+            if (res.get(index).getClassification().equals("Keyword")) {
+                moveStackReference();
+                if (res.get(index).getToken().equals(";")) {
+                    moveStackReference();
                     return validateVariableList();
                 }
             } else {
@@ -90,13 +112,14 @@ public class PSA implements Analyser {
 
     private boolean consumeVariables() {
         System.out.println("Validating for " + res.get(index).getToken());
-        if (res.get(index++).getClassification().equals("Identifier")) {
+        if (res.get(index).getClassification().equals("Identifier")) {
+            moveStackReference();
             if (res.get(index).getToken().equals(",")) {
-                index++;
+                moveStackReference();
                 return consumeVariables();
             } else if (res.get(index).getToken().equals(":")) {
                 System.out.println("::::::::::::");
-                index++;
+                moveStackReference();
                 return true;
             }
         }
@@ -106,24 +129,27 @@ public class PSA implements Analyser {
     private boolean validateProcedure() {
         System.out.println("Validating Procedure - " + res.get(index).toString());
 
-        if (res.get(index++).getClassification().equals("Identifier")) {
+        if (res.get(index).getClassification().equals("Identifier")) {
+            moveStackReference();
             System.out.println("Found identifier");
-            if (res.get(index++).getToken().equals("(")) {
+            if (res.get(index).getToken().equals("(")) {
+                moveStackReference();
                 System.out.println("Found Parentheses");
                 while (true) {
                     if (consumeVariables()) {
-                        if (res.get(index++).getClassification().equals("Keyword")) {
+                        if (res.get(index).getClassification().equals("Keyword")) {
+                            moveStackReference();
                             System.out.println("IN - " + res.get(index).toString());
                             if (res.get(index).getToken().equals(";")) {
-                                index++;
+                                moveStackReference();
                                 System.out.println("Continuing");
                                 continue;
                             }
                             if (res.get(index).getToken().equals(")")) {
-                                index++;
+                                moveStackReference();
                                 System.out.println("ON CLOSE");
                                 if (res.get(index).getToken().equals(";")) {
-                                    index++;
+                                    moveStackReference();
                                     System.out.println("ON ;");
                                     return true;
                                 }
@@ -140,24 +166,8 @@ public class PSA implements Analyser {
         return true;
     }
 
-
-    private boolean validateComposite() {
-        if (res.get(index++).getToken().equals("End")) {
-            return true;
-        }
-
-        if (res.get(index).getClassification().equals("Identifier")) {
-            index++;
-            if (res.get(index).getToken().equals(":=")) {
-                index++;
-               return validateExpression();
-            }
-        }
-        return true;
-    }
-
-    private boolean validateExpression() {
-        return true;
+    private void moveStackReference() {
+        index++;
     }
 }
 

@@ -32,14 +32,22 @@ public class TableController {
     @FXML
     private void onSintaticPress(ActionEvent event) {
         analyzer = new PSA(lexicData);
-        analyzer.analyze();
+        try {
+            analyzer.analyze();
+        } catch (RuntimeException exc) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initOwner(menuBar.getScene().getWindow());
+            alert.setHeaderText("PSA - Pascal Syntactic Analyser");
+            alert.setContentText("" + exc.getMessage());
+            alert.show();
+        }
     }
 
     @FXML
     private void onAboutPress(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.initOwner(menuBar.getScene().getWindow());
-        alert.setHeaderText("PLA - Pascal Lexic Analyser");
+        alert.setHeaderText("PSA - Pascal Syntactic Analyser");
         alert.setContentText("Developer: Caio Marcelo Campoy Guedes.\n\nFor more information visit: https://github.com/caiomcg/PLA");
         alert.show();
     }

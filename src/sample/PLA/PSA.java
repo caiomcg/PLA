@@ -9,6 +9,7 @@ import java.util.ArrayList;
  */
 public class PSA implements Analyser {
     private int index;
+    private int loops;
     private ArrayList<TableData> res;
 
     public PSA(ArrayList<TableData> res) {
@@ -93,14 +94,19 @@ public class PSA implements Analyser {
 
     private boolean validateVariableList() {
         System.out.println("VVL - "+ res.get(index).toString());
-        if(res.get(index).getClassification().equals("Keyword"))
-            return true;
+        loops = 0;
+
+        if (res.get(index).getClassification().equals("Keyword")) {
+            return loops != 0;
+        }
+
 
         if (consumeVariables()) {
             if (res.get(index).getClassification().equals("Keyword")) {
                 moveStackReference();
                 if (res.get(index).getToken().equals(";")) {
                     moveStackReference();
+                    loops++;
                     return validateVariableList();
                 }
             } else {

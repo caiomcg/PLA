@@ -88,6 +88,7 @@ public class PSA implements Analyser {
         if (res.get(index).getClassification().equals("Identifier")) {
             System.out.println("Found Identifier");
             moveStackReference();
+
             if (res.get(index).getToken().equals(":=")) {
                 System.out.println("Found equals");
                 moveStackReference();
@@ -96,16 +97,16 @@ public class PSA implements Analyser {
                 }
                 return validateBody();
             }
-        }
 
-        if(res.get(index).getClassification().equals("Identifier")) {
-            moveStackReference();
-            if(res.get(index).getToken().equals("(")) {
+            if (res.get(index).getToken().equals("(")) {
                 moveStackReference();
-                if(!consumeVariables()) {
+                if (!consumeParams()) {
                     return false;
                 }
-                return validateBody();
+                if (res.get(index).getToken().equals(";")) {
+                    moveStackReference();
+                    return validateBody();
+                }
             }
         }
 
@@ -194,6 +195,27 @@ public class PSA implements Analyser {
             if (res.get(index).getToken().equals(",")) {
                 moveStackReference();
                 return consumeVariables();
+            } else if (res.get(index).getToken().equals(":") ||
+                    res.get(index).getToken().equals(")")) {
+                System.out.println("::::::::::::");
+                moveStackReference();
+                return true;
+            }
+        }
+        if(res.get(index).getToken().equals(")")) {
+            moveStackReference();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean consumeParams() {
+        System.out.println("Validating Params " + res.get(index).getToken());
+        if (res.get(index).getClassification().equals("Identifier") || isValue()) {
+            moveStackReference();
+            if (res.get(index).getToken().equals(",")) {
+                moveStackReference();
+                return consumeParams();
             } else if (res.get(index).getToken().equals(":") ||
                     res.get(index).getToken().equals(")")) {
                 System.out.println("::::::::::::");

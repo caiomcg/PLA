@@ -18,6 +18,7 @@ public class PLA implements Analyser {
     private String floatDigits;
     private String identifier;
 
+    private ArrayList<String> booleanDigits;
     private ArrayList<String> keywords;
     private ArrayList<String> delimiter;
     private ArrayList<String> comparisonOperators;
@@ -32,6 +33,7 @@ public class PLA implements Analyser {
 
         this.intDigits           = "[0-9]+";
         this.floatDigits         = "[0-9]+[.][0-9]+";
+        this.booleanDigits       = new ArrayList<>(Arrays.asList("true", "false"));
         this.identifier          = "([a-z]|[A-Z])([0-9]|[a-z]+|[A-Z]|_)*";
 
         this.keywords            = new ArrayList<>(Arrays.asList("program", "var", "integer", "real", "boolean", "procedure", "begin",
@@ -87,6 +89,9 @@ public class PLA implements Analyser {
         } else if (split.matches(this.floatDigits)) {
             return "Floating Point Digit";
         } else if (split.matches(this.identifier)) {
+            if (this.booleanDigits.contains(split)) {
+                return "Boolean Digit";
+            }
             return "Identifier";
         }
         return "unknown";

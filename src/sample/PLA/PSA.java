@@ -57,6 +57,7 @@ public class PSA implements Analyser {
         if (res.get(index).getToken().equals("begin")) {
             System.out.println("Found BEGIN AT BODY");
             moveStackReference();
+            hasIf = false;
             if (!validateBody()) {
                 System.out.println("DEU AGUIA");
                 return false;
@@ -74,6 +75,8 @@ public class PSA implements Analyser {
         return false;
     }
 
+    boolean hasIf = false;
+
     private boolean validateBody() {
         System.out.println("VALIDATING BODY " + res.get(index).toString());
         if (res.get(index).getToken().equals("end")) {
@@ -88,7 +91,7 @@ public class PSA implements Analyser {
             if (res.get(index).getToken().equals(":=")) {
                 System.out.println("Found equals");
                 moveStackReference();
-                if(!validateExpression()) {
+                if (!validateExpression()) {
                     return false;
                 }
                 return validateBody();
@@ -96,11 +99,18 @@ public class PSA implements Analyser {
         }
 
         if (res.get(index).getToken().equals("else")) {
+            if(!hasIf)
+                return false;
             moveStackReference();
             return validateBody();
         }
 
         if (res.get(index).getToken().equals("if") || res.get(index).getToken().equals("while")) {
+
+            if(res.get(index).getToken().equals("if")) {
+                hasIf = true;
+            }
+
             System.out.println("Found if or while");
             moveStackReference();
             if (!validateExpression()) {

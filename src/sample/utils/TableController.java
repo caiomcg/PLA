@@ -7,7 +7,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TableView;
-import sample.PLA.PSA;
+import sample.Analyser.PSA;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -53,7 +53,7 @@ public class TableController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.initOwner(menuBar.getScene().getWindow());
         alert.setHeaderText("PSA - Pascal Syntactic Analyser");
-        alert.setContentText("Developer: Caio Marcelo Campoy Guedes.\n\nFor more information visit: https://github.com/caiomcg/PLA");
+        alert.setContentText("Developer: Caio Marcelo Campoy Guedes.\n\nFor more information visit: https://github.com/caiomcg/Analyser");
         alert.show();
     }
     @FXML

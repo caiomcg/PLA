@@ -1,4 +1,4 @@
-package sample.PLA;
+package sample.Analyser;
 
 import sample.utils.TableData;
 

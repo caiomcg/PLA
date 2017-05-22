@@ -15,7 +15,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sample.Analyser.PLA;
 import sample.utils.FileManager;
-import sample.utils.TableController;
 import sample.utils.TableData;
 
 import java.io.File;
@@ -44,7 +43,7 @@ public class Controller {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("screens/table.fxml"));
             Stage stage = new Stage();
-            stage.setTitle("Analyser - Pascal Lexic Analyser - Analyzed File Table");
+            stage.setTitle("Analyser - Pascal Analyser - Analyzed File Table");
             stage.setScene(new Scene(root, 790, 590));
             stage.getScene().getStylesheets().add("sample/res/layout.css");
             stage.setResizable(false);
@@ -73,7 +72,7 @@ public class Controller {
         } catch (IOException exception) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.initOwner(menuBar.getScene().getWindow());
-            alert.setHeaderText("Analyser - Pascal Lexic Analyser");
+            alert.setHeaderText("Analyser - Pascal Analyser");
             alert.setContentText("Could not create the lexic table.");
             alert.show();
         }
@@ -106,8 +105,9 @@ public class Controller {
     private void onAboutPress(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.initOwner(menuBar.getScene().getWindow());
-        alert.setHeaderText("Analyser - Pascal Lexic Analyser");
-        alert.setContentText("Developer: Caio Marcelo Campoy Guedes.\n\nFor more information visit: https://github.com/caiomcg/Analyser");
+        alert.setHeaderText("Analyser - Pascal Analyser");
+        alert.setContentText("Developers: Caio Marcelo Campoy Guedes" +
+                " and Jordan Lira de Araújo Junior\n\nFor more information visit: https://github.com/caiomcg/Analyser");
         alert.show();
     }
 

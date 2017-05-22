@@ -4,22 +4,15 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.utils.TableController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.TableController">
    <children>
        <MenuBar fx:id="menuBar" prefHeight="32.0" prefWidth="803.0">
            <menus>
                <Menu mnemonicParsing="false" text="File">
                    <items>
-                       <MenuItem mnemonicParsing="false" onAction="#onTextSave" text="Save">
-                           <accelerator>
-                               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                           </accelerator></MenuItem>
-                       <SeparatorMenuItem mnemonicParsing="false" />
                        <MenuItem mnemonicParsing="false" onAction="#onQuit" text="Close" />
                    </items>
                </Menu>
@@ -32,6 +25,6 @@
        </MenuBar>
       <TableView fx:id="table" layoutX="14.0" layoutY="41.0" prefHeight="511.0" prefWidth="774.0">
       </TableView>
-      <Button layoutX="718.0" layoutY="560.0" mnemonicParsing="false" onAction="#onSintaticPress" text="Syntactic" />
+      <Button layoutX="708.0" layoutY="562.0" mnemonicParsing="false" onAction="#onSintaticPress" text="Analyse" />
    </children>
 </AnchorPane>

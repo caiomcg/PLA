@@ -1,4 +1,4 @@
-package sample.utils;
+package sample;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -8,6 +8,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TableView;
 import sample.Analyser.PSA;
+import sample.utils.TableData;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -25,24 +26,19 @@ public class TableController {
     private PSA analyzer;
 
     @FXML
-    private void onTextSave(ActionEvent event) {
-        System.out.println("doing");
-    }
-
-    @FXML
     private void onSintaticPress(ActionEvent event) {
         analyzer = new PSA(lexicData);
         try {
             analyzer.analyze();
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.initOwner(menuBar.getScene().getWindow());
-            alert.setHeaderText("PSA - Pascal Syntactic Analyser");
+            alert.setHeaderText("PSA - Pascal Analyser");
             alert.setContentText("Valid table!");
             alert.show();
         } catch (RuntimeException exc) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.initOwner(menuBar.getScene().getWindow());
-            alert.setHeaderText("PSA - Pascal Syntactic Analyser");
+            alert.setHeaderText("PSA - Pascal Analyser");
             alert.setContentText("" + exc.getMessage());
             alert.show();
         }
@@ -52,7 +48,7 @@ public class TableController {
     private void onAboutPress(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.initOwner(menuBar.getScene().getWindow());
-        alert.setHeaderText("PSA - Pascal Syntactic Analyser");
+        alert.setHeaderText("PSA - Pascal Analyser");
         alert.setContentText("Developer: Caio Marcelo Campoy Guedes.\n\nFor more information visit: https://github.com/caiomcg/Analyser");
         alert.show();
     }

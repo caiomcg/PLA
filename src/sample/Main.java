@@ -12,7 +12,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("screens/editor.fxml"));
-        primaryStage.setTitle("Analyser - Pascal Lexic Analyser");
+        primaryStage.setTitle("Analyser - Pascal Analyser");
         primaryStage.setScene(new Scene(root, 790, 590));
         primaryStage.getScene().getStylesheets().add("sample/res/layout.css");
         primaryStage.setResizable(false);

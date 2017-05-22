@@ -32,6 +32,6 @@
        </MenuBar>
       <TableView fx:id="table" layoutX="14.0" layoutY="41.0" prefHeight="511.0" prefWidth="774.0">
       </TableView>
-      <Button layoutX="718.0" layoutY="560.0" mnemonicParsing="false" onAction="#onSintaticPress" text="Sintatic" />
+      <Button layoutX="718.0" layoutY="560.0" mnemonicParsing="false" onAction="#onSintaticPress" text="Syntactic" />
    </children>
 </AnchorPane>

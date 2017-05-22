@@ -74,12 +74,42 @@ public class PSA implements Analyser {
     }
 
     private boolean validateBody() {
-        //VALIDATE THE ENTIRE BODY
-        if (res.get(index).getToken().equals("end")) { //FINISHES THE BODY! - THE VALIDATOR FOR THIS PROCEDURE
+        if (res.get(index).getToken().equals("end")) {
             moveStackReference();
             return true;
         }
-        return true; //RETURN FALSE!!
+
+        if (res.get(index).getClassification().equals("Identifier")) {
+            moveStackReference();
+            if (res.get(index).getToken().equals(":=")) {
+                moveStackReference();
+                if(!validateExpression()) {
+                    return false;
+                }
+                return validateBody();
+            }
+        }
+
+        if (res.get(index).getToken().equals("if") || res.get(index).getToken().equals("while")) {
+            if (!validateExpression()) {
+                return false;
+            }
+            if (res.get(index).getToken().equals("begin")) {
+                moveStackReference();
+                if (!validateBody()) {
+                    return false;
+                }
+                if (res.get(index).getToken().equals("end")) {
+                    moveStackReference();
+                    if (res.get(index).getToken().equals(";")) {
+                        moveStackReference();
+                        return validateBody();
+                    }
+                }
+            }
+        }
+
+        return false; //RETURN FALSE!!
     }
 
     private boolean validateProgram() {
@@ -100,8 +130,6 @@ public class PSA implements Analyser {
     }
 
     private boolean validateVariableList() {
-        System.out.println("VVL - " + res.get(index).toString());
-        loops = 0;
         System.out.println("VVL - " + res.get(index).toString());
 
         if (res.get(index).getClassification().equals("Keyword")) {

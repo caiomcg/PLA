@@ -34,6 +34,11 @@ public class TableController {
         analyzer = new PSA(lexicData);
         try {
             analyzer.analyze();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.initOwner(menuBar.getScene().getWindow());
+            alert.setHeaderText("PSA - Pascal Syntactic Analyser");
+            alert.setContentText("Valid table!");
+            alert.show();
         } catch (RuntimeException exc) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.initOwner(menuBar.getScene().getWindow());

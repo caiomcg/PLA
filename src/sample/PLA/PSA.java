@@ -114,12 +114,10 @@ public class PSA implements Analyser {
                 if (!validateBody()) {
                     return false;
                 }
-                if (res.get(index).getToken().equals("end")) {
+                System.out.println("HERE");
+                if (res.get(index).getToken().equals(";")) {
                     moveStackReference();
-                    if (res.get(index).getToken().equals(";")) {
-                        moveStackReference();
-                        return validateBody();
-                    }
+                    return validateBody();
                 }
             }
             return validateBody();

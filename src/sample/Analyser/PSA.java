@@ -98,6 +98,17 @@ public class PSA implements Analyser {
             }
         }
 
+        if(res.get(index).getClassification().equals("Identifier")) {
+            moveStackReference();
+            if(res.get(index).getToken().equals("(")) {
+                moveStackReference();
+                if(!consumeVariables()) {
+                    return false;
+                }
+                return validateBody();
+            }
+        }
+
         if (res.get(index).getToken().equals("else")) {
             if(!hasIf)
                 return false;
@@ -183,11 +194,16 @@ public class PSA implements Analyser {
             if (res.get(index).getToken().equals(",")) {
                 moveStackReference();
                 return consumeVariables();
-            } else if (res.get(index).getToken().equals(":")) {
+            } else if (res.get(index).getToken().equals(":") ||
+                    res.get(index).getToken().equals(")")) {
                 System.out.println("::::::::::::");
                 moveStackReference();
                 return true;
             }
+        }
+        if(res.get(index).getToken().equals(")")) {
+            moveStackReference();
+            return true;
         }
         return false;
     }
@@ -202,6 +218,24 @@ public class PSA implements Analyser {
                 moveStackReference();
                 System.out.println("Found Parentheses");
                 while (true) {
+
+                    System.out.println("-------------------");
+                    System.out.println("PROCEDURE CLOSE ) " + res.get(index).toString());
+
+                    if(res.get(index).getToken().equals(")")) {
+                        moveStackReference();
+                        System.out.println("Consume: " + res.get(index).toString());
+
+                        if(res.get(index).getToken().equals(";")) {
+                            System.out.println("OK");
+                            moveStackReference();
+                            return true;
+                        }
+                        return false;
+                    }
+                    System.out.println("-------------------");
+
+
                     if (consumeVariables()) {
                         if (res.get(index).getClassification().equals("Keyword")) {
                             moveStackReference();

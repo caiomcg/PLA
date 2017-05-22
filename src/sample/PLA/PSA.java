@@ -175,6 +175,59 @@ public class PSA implements Analyser {
     private void moveStackReference() {
         index++;
     }
+
+
+    private boolean isValue() {
+        return res.get(index).getClassification().equals("Identifier") ||
+                res.get(index).getClassification().equals("Integer Digit") ||
+                res.get(index).getClassification().equals("Floating Point Digit") ||
+                res.get(index).getToken().equals("true") ||
+                res.get(index).getToken().equals("false");
+    }
+
+    private boolean isOperator() {
+        return res.get(index).getClassification().equals("Additive Operator") ||
+                res.get(index).getClassification().equals("Multiplicative Operator") ||
+                res.get(index).getClassification().equals("Comparison Operator");
+    }
+
+    int parenthesis = 0;
+
+    private boolean validateExpression() {
+        //possui parentesis?
+        if (res.get(index).getToken().equals("(")) {
+            parenthesis++;
+            index++;
+            return validateExpression();
+        }
+
+        //Checa se tem var/num/booleana
+        if (isValue()) {
+            index++;
+
+            //fecha parentesis?
+            while (res.get(index).getToken().equals(")")) {
+                if (parenthesis < 1)
+                    return false;
+                parenthesis--;
+                index++;
+            }
+
+            //checa se chegou ao fim da expressao
+            if ((res.get(index).getToken().equals("then") ||
+                    res.get(index).getToken().equals(";")) &&
+                    parenthesis == 0) {
+                return true;
+            }
+
+            if (isOperator()) {
+                index++;
+                return validateExpression();
+            }
+        }
+        return false;
+    }
+
 }
 
 

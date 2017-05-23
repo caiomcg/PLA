@@ -226,14 +226,13 @@ public class PSA implements Analyser {
             if (res.get(index).getToken().equals(",")) {
                 moveStackReference();
                 return consumeParams();
-            } else if (res.get(index).getToken().equals(":") ||
-                    res.get(index).getToken().equals(")")) {
+            } else if (res.get(index).getToken().equals(")")) {
                 System.out.println("::::::::::::");
                 moveStackReference();
                 return true;
             }
         }
-        if(res.get(index).getToken().equals(")")) {
+        if(res.get(index).getToken().equals(")") && res.get(index-1).getToken().equals("(")) {
             moveStackReference();
             return true;
         }

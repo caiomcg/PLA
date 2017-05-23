@@ -132,14 +132,13 @@ public class PSA implements Analyser {
         }
 
         if (res.get(index).getToken().equals("if") || res.get(index).getToken().equals("while")) {
-
             if (res.get(index).getToken().equals("if")) {
                 hasIf = true;
             }
 
             System.out.println("Found if or while");
             moveStackReference();
-            if (!validateExpression()) {
+            if (!checkBoolean()) {
                 return false;
             }
             System.out.println("After validating expression");
@@ -364,8 +363,6 @@ public class PSA implements Analyser {
 
     public boolean boolNumberExpr(boolean firstExp) {
 
-        ArrayList comparisonOperators = new ArrayList<>(Arrays.asList("=", "<", ">", "<=", ">=", "<>"));
-
         if (res.get(index).getToken().equals("(")) {
             parenthesis++;
             moveStackReference();
@@ -387,7 +384,7 @@ public class PSA implements Analyser {
                 moveStackReference();
             }
 
-            if (comparisonOperators.contains(res.get(index).getToken())) {
+            if (res.get(index).getClassification().equals("Comparison Operator")) {
                 if (!firstExp)
                     return false;
                 moveStackReference();
@@ -412,7 +409,7 @@ public class PSA implements Analyser {
 
     public boolean boolBooleanExpr(boolean firstExp) {
 
-        ArrayList comparisonOperators = new ArrayList<>(Arrays.asList("=", "<", ">", "<=", ">=", "<>"));
+        ArrayList comparisonOperators = new ArrayList<>(Arrays.asList("=", "<>"));
         ArrayList andOr = new ArrayList<>(Arrays.asList("or", "and"));
 
         if (res.get(index).getToken().equals("(")) {
@@ -469,6 +466,7 @@ public class PSA implements Analyser {
             semantic.cleanInitialValue();
             if (boolNumberExpr(false)) {
                 semantic.cleanInitialValue();
+                System.out.println("checkBoolean OK");
                 return true;
             }
         } else {
@@ -478,10 +476,12 @@ public class PSA implements Analyser {
                 semantic.cleanInitialValue();
                 if (boolBooleanExpr(false)) {
                     semantic.cleanInitialValue();
+                    System.out.println("checkBoolean OK");
                     return true;
                 }
             }
         }
+        System.out.println("checkBoolean NOT OK");
         return false;
     }
 }

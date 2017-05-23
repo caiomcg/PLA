@@ -39,7 +39,7 @@ public class PLA implements Analyser {
         this.keywords            = new ArrayList<>(Arrays.asList("program", "var", "integer", "real", "boolean", "procedure", "begin",
                     "end", "if", "then", "else", "while", "do", "not"));
         this.delimiter           = new ArrayList<>(Arrays.asList(";", ".", ":", "(", ")", ",", ":="));
-        this.comparisonOperators = new ArrayList<>(Arrays.asList("=", "<", ">", "<=", ">=", "<>"));
+        this.comparisonOperators = new ArrayList<>(Arrays.asList("=", "<", ">", "<=", ">=", "<>", "->"));
         this.additives            = new ArrayList<>(Arrays.asList("+", "-", "or"));
         this.multiplicatives     = new ArrayList<>(Arrays.asList("*", "/", "and"));
     }
@@ -120,7 +120,7 @@ public class PLA implements Analyser {
                         continue;
                     }
 
-                    if (token.equals(":") || token.equals("<") || token.equals(">")) {
+                    if (token.equals(":") || token.equals("<") || token.equals(">") || token.equals("-")) {
                         if (line.charAt(i+1) == '=' || line.charAt(i+1) == '>') {
                             stringBuilder.insert(insertPoint+2, " ");
                             stringBuilder.insert(insertPoint, " ");

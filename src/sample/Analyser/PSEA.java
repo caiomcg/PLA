@@ -167,8 +167,6 @@ public class PSEA {
             return "boolean";
         }
 
-        System.out.println("HERRRREEE");
-
         return stackValue(data.getToken());
     }
 

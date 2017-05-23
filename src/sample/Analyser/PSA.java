@@ -382,7 +382,7 @@ public class PSA implements Analyser {
                 moveStackReference();
             }
 
-            if (res.get(index).getClassification().equals("Comparison Operator")) {
+            if (res.get(index).getClassification().equals("Comparison Operator") && !res.get(index).getToken().equals("->")) {
                 if (!firstExp)
                     return false;
                 moveStackReference();
@@ -408,7 +408,7 @@ public class PSA implements Analyser {
     public boolean boolBooleanExpr(boolean firstExp) {
 
         ArrayList comparisonOperators = new ArrayList<>(Arrays.asList("=", "<>"));
-        ArrayList andOr = new ArrayList<>(Arrays.asList("or", "and"));
+        ArrayList andOr = new ArrayList<>(Arrays.asList("or", "and","->"));
 
         if (res.get(index).getToken().equals("(")) {
             parenthesis++;
@@ -428,15 +428,15 @@ public class PSA implements Analyser {
                 moveStackReference();
             }
 
-            //== > < <>...
-            if (comparisonOperators.contains(res.get(index).getToken())) {
+            //== <>...
+            if (comparisonOperators.contains(res.get(index).getToken()) || res.get(index).getToken().equals("->")) {
                 if (!firstExp)
                     return false;
                 moveStackReference();
                 return true;
             }
 
-            // AND e OR
+            // AND e OR e ->
             if (andOr.contains(res.get(index).getToken())) {
                 moveStackReference();
                 return boolBooleanExpr(firstExp);
@@ -458,10 +458,14 @@ public class PSA implements Analyser {
         int stackReference = index;
         parenthesis = 0;
 
+        System.out.println("Check Bool expression");
+
         semantic.cleanInitialValue();
         if (boolNumberExpr(true)) {
-            semantic.cleanInitialValue();
+            System.out.println("Found FIRST bool NUMBER expr");
             if (boolNumberExpr(false)) {
+                System.out.println("Found SECOND bool NUMBER expr");
+
                 semantic.cleanInitialValue();
                 System.out.println("checkBoolean OK");
 
@@ -471,11 +475,14 @@ public class PSA implements Analyser {
                 return true;
             }
         } else {
+            System.out.println("checkBoolean(): NOT number if");
             //INDEX recupera valor inicial pois primeira exp nao eh numerica
             index = stackReference;
             if (boolBooleanExpr(true)) {
-                semantic.cleanInitialValue();
+                System.out.println("Found FIRST bool BOOLEAN expr");
                 if (boolBooleanExpr(false)) {
+                    System.out.println("Found SECOND bool BOOLEAN expr");
+
                     semantic.cleanInitialValue();
                     System.out.println("checkBoolean OK");
 

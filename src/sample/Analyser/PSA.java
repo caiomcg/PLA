@@ -67,6 +67,7 @@ public class PSA implements Analyser {
                 return false;
             } else if (res.get(index).getToken().equals(";")) {
                 moveStackReference();
+                semantic.removeStack();
                 semantic.leftProcedureScope();
                 localProcedure = false;
                 return recursiveAnalysis(); //It is the end of a procedure
@@ -85,7 +86,7 @@ public class PSA implements Analyser {
     private boolean validateBody() {
         System.out.println("VALIDATING BODY " + res.get(index).toString());
         if (res.get(index).getToken().equals("end")) {
-            semantic.removeStack();
+
             System.out.println("Found END");
             moveStackReference();
             return true;

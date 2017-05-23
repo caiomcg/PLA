@@ -49,6 +49,7 @@ public class PSEA {
     }
 
     public void leftProcedureScope() {
+        System.out.println("LEFT PROC SCOPE");
         String last = "";
         int i = 0;
         boolean active = false;

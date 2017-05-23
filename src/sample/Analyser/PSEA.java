@@ -49,6 +49,7 @@ public class PSEA {
     }
 
     public void leftProcedureScope() {
+        System.out.println("LEFT PROC SCOPE");
         String last = "";
         int i = 0;
         boolean active = false;
@@ -166,8 +167,6 @@ public class PSEA {
         if (booleanType.contains(data.getToken())) {
             return "boolean";
         }
-
-        System.out.println("HERRRREEE");
 
         return stackValue(data.getToken());
     }

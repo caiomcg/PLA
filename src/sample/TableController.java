@@ -36,6 +36,7 @@ public class TableController {
             alert.setContentText("Valid table!");
             alert.show();
         } catch (RuntimeException exc) {
+            exc.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.initOwner(menuBar.getScene().getWindow());
             alert.setHeaderText("PSA - Pascal Analyser");

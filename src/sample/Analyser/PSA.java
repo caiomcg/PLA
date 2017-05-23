@@ -48,6 +48,7 @@ public class PSA implements Analyser {
         System.out.println("PRE PROCEDURE---------------");
         if (res.get(index).getToken().equals("procedure")) {
             localProcedure = true;
+            semantic.newProcedureScope();
             moveStackReference();
             if (!validateProcedure()) {
                 System.out.println("NOPE");
@@ -66,6 +67,7 @@ public class PSA implements Analyser {
                 return false;
             } else if (res.get(index).getToken().equals(";")) {
                 moveStackReference();
+                semantic.leftProcedureScope();
                 localProcedure = false;
                 return recursiveAnalysis(); //It is the end of a procedure
             } else if (res.get(index).getToken().equals(".")) {
@@ -107,12 +109,16 @@ public class PSA implements Analyser {
             }
 
             if (res.get(index).getToken().equals("(")) {
+                String procedure = res.get(index-1).getToken();
                 moveStackReference();
                 if (!consumeParams()) {
                     return false;
                 }
                 if (res.get(index).getToken().equals(";")) {
                     moveStackReference();
+                    if (!semantic.procedureIsVisible(procedure)) {
+                        return false;
+                    }
                     return validateBody();
                 }
             }
@@ -244,6 +250,7 @@ public class PSA implements Analyser {
         System.out.println("Validating Procedure - " + res.get(index).toString());
 
         if (res.get(index).getClassification().equals("Identifier")) {
+            semantic.insertProcedure(res.get(index).getToken());
             moveStackReference();
             System.out.println("Found identifier");
             if (res.get(index).getToken().equals("(")) {
@@ -259,8 +266,7 @@ public class PSA implements Analyser {
                         moveStackReference();
                         System.out.println("Consume: " + res.get(index).toString());
 
-                        if (res.get(index).getToken().equals(";")) {
-
+                        if(res.get(index).getToken().equals(";")) {
                             System.out.println("OK");
                             moveStackReference();
                             return true;

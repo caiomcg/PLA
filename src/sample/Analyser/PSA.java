@@ -300,17 +300,12 @@ public class PSA implements Analyser {
         System.out.println(res.get(index).toString());
         return res.get(index).getClassification().equals("Identifier") ||
                 res.get(index).getClassification().equals("Integer Digit") ||
-                res.get(index).getClassification().equals("Floating Point Digit") ||
-                res.get(index).getToken().equals("true") ||
-                res.get(index).getToken().equals("false");
+                res.get(index).getClassification().equals("Floating Point Digit");
     }
 
     private boolean isOperator() {
         return res.get(index).getClassification().equals("Additive Operator") ||
-                res.get(index).getClassification().equals("Multiplicative Operator") ||
-                res.get(index).getClassification().equals("Comparison Operator") ||
-                res.get(index).getToken().equals("and") ||
-                res.get(index).getToken().equals("or");
+                res.get(index).getClassification().equals("Multiplicative Operator");
     }
 
     int parenthesis = 0;

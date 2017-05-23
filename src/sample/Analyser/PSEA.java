@@ -104,7 +104,7 @@ public class PSEA {
         initialValue = null;
     }
 
-    private String convertType(TableData data) {
+    public String convertType(TableData data) {
         if (data.getToken().matches(integer)) {
             return "integer";
         }
@@ -121,4 +121,5 @@ public class PSEA {
 
         return stackValue(data.getToken());
     }
+
 }

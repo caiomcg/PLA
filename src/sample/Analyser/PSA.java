@@ -3,6 +3,7 @@ package sample.Analyser;
 import sample.utils.TableData;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by caiomcg on 16/05/17.
@@ -93,7 +94,7 @@ public class PSA implements Analyser {
             moveStackReference();
 
             if (res.get(index).getToken().equals(":=")) {
-                if (!semantic.isTypeValid(res.get(index-1))) {
+                if (!semantic.isTypeValid(res.get(index - 1))) {
                     index--;
                     return false;
                 }
@@ -118,7 +119,7 @@ public class PSA implements Analyser {
         }
 
         if (res.get(index).getToken().equals("else")) {
-            if(!hasIf)
+            if (!hasIf)
                 return false;
             moveStackReference();
             return validateBody();
@@ -126,7 +127,7 @@ public class PSA implements Analyser {
 
         if (res.get(index).getToken().equals("if") || res.get(index).getToken().equals("while")) {
 
-            if(res.get(index).getToken().equals("if")) {
+            if (res.get(index).getToken().equals("if")) {
                 hasIf = true;
             }
 
@@ -212,7 +213,7 @@ public class PSA implements Analyser {
                 return true;
             }
         }
-        if(res.get(index).getToken().equals(")")) {
+        if (res.get(index).getToken().equals(")")) {
             moveStackReference();
             return true;
         }
@@ -232,7 +233,7 @@ public class PSA implements Analyser {
                 return true;
             }
         }
-        if(res.get(index).getToken().equals(")") && res.get(index-1).getToken().equals("(")) {
+        if (res.get(index).getToken().equals(")") && res.get(index - 1).getToken().equals("(")) {
             moveStackReference();
             return true;
         }
@@ -254,11 +255,11 @@ public class PSA implements Analyser {
                     System.out.println("-------------------");
                     System.out.println("PROCEDURE CLOSE ) " + res.get(index).toString());
 
-                    if(res.get(index).getToken().equals(")")) {
+                    if (res.get(index).getToken().equals(")")) {
                         moveStackReference();
                         System.out.println("Consume: " + res.get(index).toString());
 
-                        if(res.get(index).getToken().equals(";")) {
+                        if (res.get(index).getToken().equals(";")) {
 
                             System.out.println("OK");
                             moveStackReference();
@@ -355,6 +356,128 @@ public class PSA implements Analyser {
         return false;
     }
 
+    public boolean boolNumberExpr(boolean firstExp) {
+
+        ArrayList comparisonOperators = new ArrayList<>(Arrays.asList("=", "<", ">", "<=", ">=", "<>"));
+
+        if (res.get(index).getToken().equals("(")) {
+            parenthesis++;
+            moveStackReference();
+            return validateExpression();
+        }
+
+        //numero ou real
+        if ((semantic.convertType(res.get(index))).equals("integer") ||
+                (semantic.convertType(res.get(index))).equals("real")) {
+            if (!semantic.isTypeValid(res.get(index))) {
+                return false;
+            }
+            moveStackReference();
+
+            while (res.get(index).getToken().equals(")")) {
+                if (parenthesis < 1)
+                    return false;
+                parenthesis--;
+                moveStackReference();
+            }
+
+            if (comparisonOperators.contains(res.get(index).getToken())) {
+                if (!firstExp)
+                    return false;
+                moveStackReference();
+                return true;
+            }
+
+            //PEGA OPERADOR + - * /
+            if (isOperator()) {
+                moveStackReference();
+                return boolNumberExpr(firstExp);
+            }
+
+            //SEGUNDA EXP E NO FINAL
+            if (!firstExp &&
+                    (res.get(index).getToken().equals("then") || res.get(index).getToken().equals("do"))) {
+                moveStackReference();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean boolBooleanExpr(boolean firstExp) {
+
+        ArrayList comparisonOperators = new ArrayList<>(Arrays.asList("=", "<", ">", "<=", ">=", "<>"));
+        ArrayList andOr = new ArrayList<>(Arrays.asList("or", "and"));
+
+        if (res.get(index).getToken().equals("(")) {
+            parenthesis++;
+            moveStackReference();
+            return validateExpression();
+        }
+
+        //Var booleana, true ou false
+        if ((semantic.convertType(res.get(index))).equals("boolean")) {
+            if (!semantic.isTypeValid(res.get(index))) {
+                return false;
+            }
+            moveStackReference();
+
+            while (res.get(index).getToken().equals(")")) {
+                if (parenthesis < 1)
+                    return false;
+                parenthesis--;
+                moveStackReference();
+            }
+
+            //== > < <>...
+            if (comparisonOperators.contains(res.get(index).getToken())) {
+                if (!firstExp)
+                    return false;
+                moveStackReference();
+                return true;
+            }
+
+            // AND e OR
+            if (andOr.contains(res.get(index).getToken())) {
+                moveStackReference();
+                return boolBooleanExpr(firstExp);
+            }
+
+            //SEGUNDA EXPR e NO FINAL
+            if (!firstExp &&
+                    (res.get(index).getToken().equals("then") || res.get(index).getToken().equals("do"))) {
+                moveStackReference();
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public boolean checkBoolean() {
+        int stackReference = index;
+        parenthesis = 0;
+
+        semantic.cleanInitialValue();
+        if (boolNumberExpr(true)) {
+            semantic.cleanInitialValue();
+            if (boolNumberExpr(false)) {
+                semantic.cleanInitialValue();
+                return true;
+            }
+        } else {
+            //INDEX recupera valor inicial pois primeira exp nao eh numerica
+            index = stackReference;
+            if (boolBooleanExpr(true)) {
+                semantic.cleanInitialValue();
+                if (boolBooleanExpr(false)) {
+                    semantic.cleanInitialValue();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
 
 

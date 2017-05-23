@@ -366,7 +366,7 @@ public class PSA implements Analyser {
         if (res.get(index).getToken().equals("(")) {
             parenthesis++;
             moveStackReference();
-            return validateExpression();
+            return boolNumberExpr(firstExp);
         }
 
         //numero ou real
@@ -378,8 +378,6 @@ public class PSA implements Analyser {
             moveStackReference();
 
             while (res.get(index).getToken().equals(")")) {
-                if (parenthesis < 1)
-                    return false;
                 parenthesis--;
                 moveStackReference();
             }
@@ -415,7 +413,7 @@ public class PSA implements Analyser {
         if (res.get(index).getToken().equals("(")) {
             parenthesis++;
             moveStackReference();
-            return validateExpression();
+            return boolBooleanExpr(firstExp);
         }
 
         //Var booleana, true ou false
@@ -426,8 +424,6 @@ public class PSA implements Analyser {
             moveStackReference();
 
             while (res.get(index).getToken().equals(")")) {
-                if (parenthesis < 1)
-                    return false;
                 parenthesis--;
                 moveStackReference();
             }
@@ -458,6 +454,7 @@ public class PSA implements Analyser {
 
 
     public boolean checkBoolean() {
+        ArrayList andOr = new ArrayList<>(Arrays.asList("or", "and"));
         int stackReference = index;
         parenthesis = 0;
 
@@ -467,6 +464,10 @@ public class PSA implements Analyser {
             if (boolNumberExpr(false)) {
                 semantic.cleanInitialValue();
                 System.out.println("checkBoolean OK");
+
+                if(andOr.contains(res.contains(index)))
+                    return checkBoolean();
+
                 return true;
             }
         } else {
@@ -477,6 +478,10 @@ public class PSA implements Analyser {
                 if (boolBooleanExpr(false)) {
                     semantic.cleanInitialValue();
                     System.out.println("checkBoolean OK");
+
+                    if(andOr.contains(res.contains(index)))
+                        return checkBoolean();
+
                     return true;
                 }
             }
